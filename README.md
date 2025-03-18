@@ -1,4 +1,4 @@
-<h1 align="center"><b>PHÁT TRIỂN ỨNG DỤNG</b></h>
+<h1 align="center"><b>Công nghệ mới</b></h>
 
 ## Đề tài: Website/App tổ chức sự kiện, buổi biểu diễn và cung cấp dịch vụ (cho nhà hát, điểm biểu diễn...)
 

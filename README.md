@@ -1,6 +1,6 @@
 <h1 align="center"><b>Công nghệ mới</b></h>
 
-## Đề tài: Website/App tổ chức sự kiện, buổi biểu diễn và cung cấp dịch vụ (cho nhà hát, điểm biểu diễn...)
+## Đề tài: Tìm hiểu các công nghệ QRcode và Xây dựng hệ thống tổ chức sự kiện
 
 ## THÀNH VIÊN NHÓM
 |STT| MSSV      | Họ và Tên               |                                      

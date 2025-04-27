@@ -1,28 +1,37 @@
 <?php
-// Bỏ session_start() ở đây, vì config.php sẽ xử lý
-// if (session_status() === PHP_SESSION_NONE) {
-//     session_start();
-// }
-
-require_once 'config/config.php';
-require_once 'config/database.php';
-
-// Lấy danh sách sự kiện nổi bật
-$conn = getDBConnection();
-$query = "SELECT s.ID_SuKien, s.TenSuKien, s.HinhAnh, s.ThoiGianBatDau, u.HoTen as organizer_name 
-          FROM sukien s 
-          JOIN user u ON s.ID_User = u.ID_User 
-          ORDER BY s.ThoiGianBatDau DESC 
-          LIMIT 6";
-$result = $conn->query($query);
-
-// Check for query errors
-if (!$result) {
-    die("Lỗi truy vấn: " . $conn->error);
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
-
-$events = $result->fetch_all(MYSQLI_ASSOC);
-$conn->close();
+// Lấy danh sách sự kiện nổi bật từ API
+$apiUrl = 'http://' . $_SERVER['HTTP_HOST'] . '/SuKien/cnm/api/events.php';
+$response = file_get_contents($apiUrl);
+$events = [];
+$newEvents = [];
+if ($response !== false) {
+    $data = json_decode($response, true);
+    if (isset($data['success']) && $data['success'] && isset($data['data'])) {
+        $events = $data['data'];
+        // Lọc sự kiện mới trong 7 ngày gần nhất dựa vào NgayTao
+        $now = new DateTime();
+        foreach ($events as $event) {
+            if (isset($event['NgayTao'])) {
+                $created = new DateTime($event['NgayTao']);
+                $interval = $now->diff($created);
+                if ($interval->days <= 7 && $created <= $now) {
+                    $newEvents[] = $event;
+                }
+            }
+        }
+    }
+}
+function getEventImagePath($filename) {
+    if (!$filename) return 'Hinh/logo/logo.png';
+    $posterPath = 'Hinh/poster/' . $filename;
+    $mainPath = 'Hinh/' . $filename;
+    if (file_exists($posterPath)) return $posterPath;
+    if (file_exists($mainPath)) return $mainPath;
+    return 'Hinh/logo/logo.png';
+}
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -57,6 +66,14 @@ $conn->close();
             font-size: 1.5rem;
         }
 
+        .navbar-brand img {
+            height: 60px;
+            width: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+        }
+
         .nav-link {
             color: rgba(255, 255, 255, 0.8) !important;
             transition: color 0.3s ease;
@@ -66,24 +83,39 @@ $conn->close();
             color: white !important;
         }
 
-        .hero-section {
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('Hinh/banner/banner.jpg');
+        .carousel-item {
+            height: 500px;
             background-size: cover;
             background-position: center;
-            color: white;
-            padding: 100px 0;
-            text-align: center;
         }
 
-        .hero-title {
+        .carousel-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .carousel-caption {
+            top: 50%;
+            transform: translateY(-50%);
+            bottom: auto;
+        }
+
+        .carousel-title {
             font-size: 3rem;
             font-weight: bold;
             margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
-        .hero-subtitle {
+        .carousel-subtitle {
             font-size: 1.2rem;
             margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         .btn-hero {
@@ -104,7 +136,9 @@ $conn->close();
         .section-title {
             text-align: center;
             margin: 50px 0;
-            color: var(--secondary-color);
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            font-weight: bold;
         }
 
         .event-card {
@@ -121,19 +155,21 @@ $conn->close();
         }
 
         .event-image {
-            height: 200px;
+            width: 100%;
+            height: 320px;
             object-fit: cover;
+            display: block;
         }
 
         .event-title {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             font-weight: bold;
             margin: 15px 0 10px;
         }
 
         .event-info {
             color: #666;
-            font-size: 0.9rem;
+            font-size: 1rem;
             margin-bottom: 10px;
         }
 
@@ -176,12 +212,17 @@ $conn->close();
         }
 
         @media (max-width: 768px) {
-            .hero-title {
+            .carousel-item {
+                height: 300px;
+            }
+            .carousel-title {
                 font-size: 2rem;
             }
-            
-            .hero-subtitle {
+            .carousel-subtitle {
                 font-size: 1rem;
+            }
+            .event-image {
+                height: 180px;
             }
         }
     </style>
@@ -192,7 +233,7 @@ $conn->close();
         <div class="container">
             <a class="navbar-brand" href="index.php">
                 <img src="Hinh/logo/logo.png" alt="Logo" height="40" class="me-2">
-                Hệ thống sự kiện
+                HỆ THỐNG TỔ CHỨC SỰ KIỆN
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -222,9 +263,8 @@ $conn->close();
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarUserDropdown">
                                 <!-- Thêm link đến dashboard/profile nếu cần -->
-                                <!-- <li><a class="dropdown-item" href="views/user/dashboard.php">Bảng điều khiển</a></li> -->
-                                <!-- <li><a class="dropdown-item" href="views/user/profile.php">Hồ sơ</a></li> -->
-                                <!-- <li><hr class="dropdown-divider"></li> -->
+                                 <li><a class="dropdown-item" href="views/user/profile.php">Hồ sơ</a></li> 
+                                 <li><hr class="dropdown-divider"></li> 
                                 <li><a class="dropdown-item" href="api/auth.php?action=logout">Đăng xuất</a></li>
                             </ul>
                         </li>
@@ -241,37 +281,109 @@ $conn->close();
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="container">
-            <h1 class="hero-title">Kết nối và tham gia sự kiện</h1>
-            <p class="hero-subtitle">Khám phá các sự kiện thú vị và kết nối với cộng đồng</p>
-            <a href="views/events/list.php" class="btn btn-hero">Xem sự kiện</a>
+    <!-- Banner Carousel -->
+    <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="2"></button>
         </div>
-    </section>
+        <div class="carousel-inner">
+            <div class="carousel-item active" style="background-image: url('Hinh/banner/banner1.jpg');">
+                <div class="carousel-caption">
+                    <h1 class="carousel-title">Chào mừng đến với trang chủ</h1>
+                    <p class="carousel-subtitle">Khám phá những sự kiện thú vị và ý nghĩa</p>
+                    <a href="views/events/list.php" class="btn btn-hero">Xem sự kiện</a>
+                </div>
+            </div>
+            <div class="carousel-item" style="background-image: url('Hinh/banner/banner2.jpeg');">
+                <div class="carousel-caption">
+                    <h1 class="carousel-title">Sự kiện đặc biệt</h1>
+                    <p class="carousel-subtitle">Tham gia các hoạt động thú vị cùng chúng tôi</p>
+                    <a href="views/events/list.php" class="btn btn-hero">Khám phá ngay</a>
+                </div>
+            </div>
+            <div class="carousel-item" style="background-image: url('Hinh/banner/banner3.jpg');">
+                <div class="carousel-caption">
+                    <h1 class="carousel-title">Kết nối cộng đồng</h1>
+                    <p class="carousel-subtitle">Cùng nhau tạo nên những khoảnh khắc đáng nhớ</p>
+                    <a href="views/events/list.php" class="btn btn-hero">Tham gia ngay</a>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
 
     <!-- Events Section -->
     <section class="container">
-        <h2 class="section-title">Sự kiện nổi bật</h2>
+        <h2 class="section-title">SỰ KIỆN NỔI BẬT</h2>
         <div class="row">
-            <?php foreach ($events as $event): ?>
-            <div class="col-md-4">
-                <div class="event-card">
-                    <img src="<?php echo htmlspecialchars($event['HinhAnh']); ?>" alt="<?php echo htmlspecialchars($event['TenSuKien']); ?>" class="event-image w-100">
-                    <div class="p-3">
-                        <h3 class="event-title"><?php echo htmlspecialchars($event['TenSuKien']); ?></h3>
-                        <p class="event-info">
-                            <i class="fas fa-user"></i> <?php echo htmlspecialchars($event['organizer_name']); ?>
-                        </p>
-                        <p class="event-info">
-                            <i class="fas fa-calendar"></i> 
-                            <span class="event-date"><?php echo date('d/m/Y', strtotime($event['ThoiGianBatDau'])); ?></span>
-                        </p>
-                        <a href="views/events/detail.php?id=<?php echo $event['ID_SuKien']; ?>" class="btn btn-outline-primary w-100">Xem chi tiết</a>
+            <?php if (!empty($events)): ?>
+                <?php foreach ($events as $event): ?>
+                <div class="col-md-3">
+                    <div class="event-card">
+                        <img src="<?php echo htmlspecialchars(getEventImagePath($event['HinhAnh'])); ?>" alt="<?php echo htmlspecialchars($event['TenSuKien']); ?>" class="event-image w-100">
+                        <div class="p-3">
+                            <h3 class="event-title"><?php echo htmlspecialchars($event['TenSuKien']); ?></h3>
+                            <p class="event-info">
+                                <i class="fas fa-calendar"></i> 
+                                <span class="event-date"><?php echo date('d/m/Y H:i', strtotime($event['ThoiGianBatDau'])); ?></span>
+                            </p>
+                            <p class="event-info">
+                                <i class="fas fa-map-marker-alt"></i> 
+                                <?php echo htmlspecialchars($event['DiaDiem']); ?>
+                            </p>
+                            <a href="views/events/detail.php?id=<?php echo $event['ID_SuKien']; ?>" class="btn btn-outline-primary w-100">Xem chi tiết</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="col-12 text-center">
+                    <div class="alert alert-info">
+                        Hiện tại chưa có sự kiện nào được tổ chức. Vui lòng quay lại sau!
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+    </section>
+
+    <!-- New Events Section -->
+    <section class="container mt-5">
+        <h2 class="section-title" style="color: #ff5722;">SỰ KIỆN MỚI</h2>
+        <div class="row">
+            <?php if (!empty($newEvents)): ?>
+                <?php foreach (array_slice($newEvents, 0, 4) as $event): ?>
+                <div class="col-md-3">
+                    <div class="event-card border border-warning">
+                        <img src="<?php echo htmlspecialchars(getEventImagePath($event['HinhAnh'])); ?>" alt="<?php echo htmlspecialchars($event['TenSuKien']); ?>" class="event-image w-100">
+                        <div class="p-3">
+                            <h3 class="event-title"><?php echo htmlspecialchars($event['TenSuKien']); ?></h3>
+                            <p class="event-info">
+                                <i class="fas fa-calendar-plus"></i> 
+                                <span class="event-date">Tạo lúc: <?php echo date('d/m/Y H:i', strtotime($event['NgayTao'])); ?></span>
+                            </p>
+                            <p class="event-info">
+                                <i class="fas fa-map-marker-alt"></i> 
+                                <?php echo htmlspecialchars($event['DiaDiem']); ?>
+                            </p>
+                            <a href="views/events/detail.php?id=<?php echo $event['ID_SuKien']; ?>" class="btn btn-warning w-100 text-white">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="col-12 text-center">
+                    <div class="alert alert-secondary">
+                        Không có sự kiện mới trong 7 ngày gần đây.
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
     </section>
 

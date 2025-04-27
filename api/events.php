@@ -2,7 +2,6 @@
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
-header('Access-Control-Allow-Headers: Content-Type');
 
 require_once '../config/database.php';
 require_once '../config/config.php';
@@ -11,87 +10,76 @@ $conn = getDBConnection();
 
 switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
-        // Lấy danh sách sự kiện
-        if (isset($_GET['id'])) {
-            $id = $_GET['id'];
-            $stmt = $conn->prepare("SELECT * FROM events WHERE id = ?");
-            $stmt->bind_param("i", $id);
+        $query = "SELECT s.ID_SuKien, s.TenSuKien, s.HinhAnh, s.ThoiGianBatDau, s.ThoiGianKetThuc, d.TenDiaDiem as DiaDiem, u.HoTen as organizer_name
+                  FROM sukien s
+                  JOIN user u ON s.ID_User = u.ID_User
+                  JOIN diadiem d ON s.ID_DiaDiem = d.ID_DiaDiem
+                  ORDER BY s.ThoiGianBatDau DESC";
+        $result = $conn->query($query);
+        if ($result) {
+            $events = $result->fetch_all(MYSQLI_ASSOC);
+            echo json_encode(['success' => true, 'data' => $events]);
         } else {
-            $stmt = $conn->prepare("SELECT * FROM events ORDER BY start_date DESC");
+            echo json_encode(['success' => false, 'message' => 'Lỗi truy vấn']);
         }
-        
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $events = [];
-        
-        while ($row = $result->fetch_assoc()) {
-            $events[] = $row;
-        }
-        
-        echo json_encode(['success' => true, 'data' => $events]);
         break;
-        
     case 'POST':
-        // Tạo sự kiện mới
         $data = json_decode(file_get_contents('php://input'), true);
-        
-        $stmt = $conn->prepare("INSERT INTO events (title, description, start_date, end_date, location, max_attendees) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssssi", 
-            $data['title'],
-            $data['description'],
-            $data['start_date'],
-            $data['end_date'],
-            $data['location'],
-            $data['max_attendees']
+        $stmt = $conn->prepare("INSERT INTO sukien (TenSuKien, HinhAnh, ThoiGianBatDau, ThoiGianKetThuc, ID_DiaDiem, ID_User) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssii",
+            $data['TenSuKien'],
+            $data['HinhAnh'],
+            $data['ThoiGianBatDau'],
+            $data['ThoiGianKetThuc'],
+            $data['ID_DiaDiem'],
+            $data['ID_User']
         );
-        
         if ($stmt->execute()) {
-            $eventId = $conn->insert_id;
-            echo json_encode(['success' => true, 'message' => 'Event created successfully', 'id' => $eventId]);
+            echo json_encode(['success' => true, 'message' => 'Thêm sự kiện thành công', 'id' => $conn->insert_id]);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Failed to create event']);
+            echo json_encode(['success' => false, 'message' => 'Thêm sự kiện thất bại']);
         }
         break;
-        
     case 'PUT':
-        // Cập nhật sự kiện
-        $data = json_decode(file_get_contents('php://input'), true);
-        $id = $_GET['id'];
-        
-        $stmt = $conn->prepare("UPDATE events SET title = ?, description = ?, start_date = ?, end_date = ?, location = ?, max_attendees = ? WHERE id = ?");
-        $stmt->bind_param("sssssii",
-            $data['title'],
-            $data['description'],
-            $data['start_date'],
-            $data['end_date'],
-            $data['location'],
-            $data['max_attendees'],
+        parse_str(file_get_contents('php://input'), $put_vars);
+        $id = $put_vars['ID_SuKien'] ?? null;
+        if (!$id) {
+            echo json_encode(['success' => false, 'message' => 'Thiếu ID_SuKien']);
+            break;
+        }
+        $stmt = $conn->prepare("UPDATE sukien SET TenSuKien=?, HinhAnh=?, ThoiGianBatDau=?, ThoiGianKetThuc=?, ID_DiaDiem=?, ID_User=? WHERE ID_SuKien=?");
+        $stmt->bind_param("ssssiii",
+            $put_vars['TenSuKien'],
+            $put_vars['HinhAnh'],
+            $put_vars['ThoiGianBatDau'],
+            $put_vars['ThoiGianKetThuc'],
+            $put_vars['ID_DiaDiem'],
+            $put_vars['ID_User'],
             $id
         );
-        
         if ($stmt->execute()) {
-            echo json_encode(['success' => true, 'message' => 'Event updated successfully']);
+            echo json_encode(['success' => true, 'message' => 'Cập nhật sự kiện thành công']);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Failed to update event']);
+            echo json_encode(['success' => false, 'message' => 'Cập nhật sự kiện thất bại']);
         }
         break;
-        
     case 'DELETE':
-        // Xóa sự kiện
-        $id = $_GET['id'];
-        
-        $stmt = $conn->prepare("DELETE FROM events WHERE id = ?");
+        parse_str(file_get_contents('php://input'), $del_vars);
+        $id = $del_vars['ID_SuKien'] ?? null;
+        if (!$id) {
+            echo json_encode(['success' => false, 'message' => 'Thiếu ID_SuKien']);
+            break;
+        }
+        $stmt = $conn->prepare("DELETE FROM sukien WHERE ID_SuKien=?");
         $stmt->bind_param("i", $id);
-        
         if ($stmt->execute()) {
-            echo json_encode(['success' => true, 'message' => 'Event deleted successfully']);
+            echo json_encode(['success' => true, 'message' => 'Xóa sự kiện thành công']);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Failed to delete event']);
+            echo json_encode(['success' => false, 'message' => 'Xóa sự kiện thất bại']);
         }
         break;
-        
     default:
-        echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+        echo json_encode(['success' => false, 'message' => 'Phương thức không hỗ trợ']);
         break;
 }
 

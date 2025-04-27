@@ -13,14 +13,18 @@ if ($response !== false) {
         $events = $data['data'];
         // Lọc sự kiện mới trong 7 ngày gần nhất dựa vào NgayTao
         $now = new DateTime();
+        $sevenDaysAgo = (clone $now)->modify('-7 days');
         foreach ($events as $event) {
             if (isset($event['NgayTao'])) {
                 $created = new DateTime($event['NgayTao']);
-                $interval = $now->diff($created);
-                if ($interval->days <= 7 && $created <= $now) {
+                if ($created >= $sevenDaysAgo && $created <= $now) {
                     $newEvents[] = $event;
                 }
             }
+        }
+        // Nếu không có sự kiện nào trong 7 ngày gần nhất, hiển thị tất cả sự kiện
+        if (empty($newEvents)) {
+            $newEvents = $events;
         }
     }
 }
@@ -360,19 +364,19 @@ function getEventImagePath($filename) {
             <?php if (!empty($newEvents)): ?>
                 <?php foreach (array_slice($newEvents, 0, 4) as $event): ?>
                 <div class="col-md-3">
-                    <div class="event-card border border-warning">
+                    <div class="event-card">
                         <img src="<?php echo htmlspecialchars(getEventImagePath($event['HinhAnh'])); ?>" alt="<?php echo htmlspecialchars($event['TenSuKien']); ?>" class="event-image w-100">
                         <div class="p-3">
                             <h3 class="event-title"><?php echo htmlspecialchars($event['TenSuKien']); ?></h3>
                             <p class="event-info">
-                                <i class="fas fa-calendar-plus"></i> 
-                                <span class="event-date">Tạo lúc: <?php echo date('d/m/Y H:i', strtotime($event['NgayTao'])); ?></span>
+                                <i class="fas fa-calendar"></i> 
+                                <span class="event-date"><?php echo date('d/m/Y H:i', strtotime($event['ThoiGianBatDau'])); ?></span>
                             </p>
                             <p class="event-info">
                                 <i class="fas fa-map-marker-alt"></i> 
                                 <?php echo htmlspecialchars($event['DiaDiem']); ?>
                             </p>
-                            <a href="views/events/detail.php?id=<?php echo $event['ID_SuKien']; ?>" class="btn btn-warning w-100 text-white">Xem chi tiết</a>
+                            <a href="views/events/detail.php?id=<?php echo $event['ID_SuKien']; ?>" class="btn btn-outline-primary w-100">Xem chi tiết</a>
                         </div>
                     </div>
                 </div>

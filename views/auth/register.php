@@ -13,13 +13,15 @@ require_once '../../includes/csrf.php';
         body {
             background: linear-gradient(to right, #000000, #0f9d58);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
         }
-
+        .container-register-center {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         .register-container {
             background: rgba(255, 255, 255, 0.9);
             padding: 2rem;
@@ -28,7 +30,6 @@ require_once '../../includes/csrf.php';
             width: 100%;
             max-width: 600px;
         }
-
         .form-label {
             font-weight: 500;
             margin-bottom: 4px;
@@ -106,59 +107,61 @@ require_once '../../includes/csrf.php';
     </style>
 </head>
 <body>
-    <div class="register-container">
-        <h2 class="text-center mb-4">Đăng ký tài khoản</h2>
-        <div class="alert alert-danger" role="alert"></div>
-        <form id="registerForm">
-            <?php echo CSRF::getTokenInput(); ?>
-            <div class="mb-3">
-                <label for="username" class="form-label">Tên đăng nhập</label>
-                <input type="text" class="form-control" id="username" name="username" required>
-            </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-            </div>
-            <div class="mb-3">
-                <label for="fullname" class="form-label">Họ và tên</label>
-                <input type="text" class="form-control" id="fullname" name="fullname" required>
-            </div>
-            <div class="mb-3">
-                <label for="phone" class="form-label">Số điện thoại</label>
-                <input type="tel" class="form-control" id="phone" name="phone" required>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Mật khẩu</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-                <div class="password-requirements">
-                    Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ hoa, chữ thường và số
+    <div class="container-register-center">
+        <div class="register-container">
+            <h2 class="text-center mb-4">Đăng ký tài khoản</h2>
+            <div class="alert alert-danger" role="alert"></div>
+            <form id="registerForm">
+                <?php echo CSRF::getTokenInput(); ?>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Tên đăng nhập</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
                 </div>
-            </div>
-            <div class="mb-3">
-                <label for="confirmPassword" class="form-label">Xác nhận mật khẩu</label>
-                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
-            </div>
-            <div class="mb-3">
-                <label for="role" class="form-label">Loại tài khoản</label>
-                <select class="form-select" id="role" name="role" required>
-                    <option value="" selected disabled>-- Chọn loại tài khoản --</option>
-                    <option value="2">Khách hàng</option>
-                    <option value="3">Đơn vị tổ chức</option>
-                </select>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="terms" required>
-                <label class="form-check-label" for="terms">
-                    Tôi đồng ý với <a href="#" class="link-login">điều khoản sử dụng</a>
-                </label>
-            </div>
-            <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary">Đăng ký</button>
-            </div>
-            <div class="text-center mt-3">
-                <p>Đã có tài khoản? <a href="login.php" class="link-login">Đăng nhập ngay</a></p>
-            </div>
-        </form>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="fullname" class="form-label">Họ và tên</label>
+                    <input type="text" class="form-control" id="fullname" name="fullname" required>
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Số điện thoại</label>
+                    <input type="tel" class="form-control" id="phone" name="phone" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Mật khẩu</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                    <div class="password-requirements">
+                        Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ hoa, chữ thường và số
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Xác nhận mật khẩu</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                </div>
+                <div class="mb-3">
+                    <label for="role" class="form-label">Loại tài khoản</label>
+                    <select class="form-select" id="role" name="role" required>
+                        <option value="" selected disabled>-- Chọn loại tài khoản --</option>
+                        <option value="2">Khách hàng</option>
+                        <option value="3">Đơn vị tổ chức</option>
+                    </select>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="terms" required>
+                    <label class="form-check-label" for="terms">
+                        Tôi đồng ý với <a href="#" class="link-login">điều khoản sử dụng</a>
+                    </label>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Đăng ký</button>
+                </div>
+                <div class="text-center mt-3">
+                    <p>Đã có tài khoản? <a href="login.php" class="link-login">Đăng nhập ngay</a></p>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

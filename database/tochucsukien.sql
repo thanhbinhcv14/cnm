@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th4 27, 2025 lúc 08:32 AM
+-- Thời gian đã tạo: Th5 09, 2025 lúc 07:59 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -78,10 +78,32 @@ INSERT INTO `diadiem` (`ID_DiaDiem`, `TenDiaDiem`, `DiaChi`, `HinhAnh`, `TenChuS
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `hoa`
+-- Cấu trúc bảng cho bảng `giohang`
 --
 
-CREATE TABLE `hoa` (
+CREATE TABLE `giohang` (
+  `ID_GioHang` int(11) NOT NULL,
+  `ID_User` int(11) NOT NULL,
+  `ID_Ve` int(11) NOT NULL,
+  `SoLuong` int(11) NOT NULL,
+  `NgayTao` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `giohang`
+--
+
+INSERT INTO `giohang` (`ID_GioHang`, `ID_User`, `ID_Ve`, `SoLuong`, `NgayTao`) VALUES
+(1, 8, 10, 1, '2025-05-03 13:57:31'),
+(2, 1, 8, 1, '2025-05-05 07:56:58');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `hoadon`
+--
+
+CREATE TABLE `hoadon` (
   `ID_HoaDon` int(11) NOT NULL,
   `ID_User` int(11) NOT NULL,
   `TongTien` decimal(10,0) NOT NULL,
@@ -122,26 +144,27 @@ CREATE TABLE `sukien` (
   `ID_Sukien` int(11) NOT NULL,
   `TenSuKien` varchar(255) NOT NULL,
   `HinhAnh` varchar(255) NOT NULL,
-  `ThoiGianBatDau` date NOT NULL,
-  `ThoiGianKetThuc` date NOT NULL,
+  `ThoiGianBatDau` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `ThoiGianKetThuc` timestamp NOT NULL DEFAULT current_timestamp(),
   `NoiDung` varchar(255) NOT NULL,
   `TheLoai` varchar(255) NOT NULL,
   `ID_User` int(11) NOT NULL,
   `ID_Ve` int(11) NOT NULL,
   `ID_DiaDiem` int(11) NOT NULL,
-  `NgayTao` timestamp NOT NULL DEFAULT current_timestamp()
+  `NgayTao` timestamp NOT NULL DEFAULT current_timestamp(),
+  `qrcode` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `sukien`
 --
 
-INSERT INTO `sukien` (`ID_Sukien`, `TenSuKien`, `HinhAnh`, `ThoiGianBatDau`, `ThoiGianKetThuc`, `NoiDung`, `TheLoai`, `ID_User`, `ID_Ve`, `ID_DiaDiem`, `NgayTao`) VALUES
-(1, 'Lễ Hội Ánh Sáng', 'anhsang1.jpg', '2025-05-01', '2025-05-02', 'Lễ hội với hàng ngàn ánh đèn nghệ thuật.', 'Lễ hội', 4, 1, 1, '2025-04-24 21:13:21'),
-(2, 'Đêm Nhạc Rock', 'rock1.jpg', '2025-06-10', '2025-06-11', 'Chương trình nhạc rock với nhiều ban nhạc nổi tiếng.', 'Âm nhạc', 4, 2, 2, '2025-04-24 21:14:24'),
-(3, 'Chung Kết Rap Việt', 'rapviet1.jpg', '2025-07-20', '2025-07-21', 'Sự kiện hoành tráng với dàn sao rap hot nhất.', 'Truyền hình', 4, 3, 3, '2025-04-24 21:15:24'),
-(4, 'Workshop Công Nghệ', 'workshop1.jpeg', '2025-08-15', '2025-08-16', 'Hội thảo chia sẻ về công nghệ tương lai.', 'Giáo dục', 5, 4, 4, '2025-04-24 21:16:20'),
-(5, 'Lễ Hội Ẩm Thực', 'amthuc2.webp', '2025-09-10', '2025-09-12', 'Thưởng thức các món ăn từ khắp nơi trên thế giới.', 'Ẩm thực', 5, 5, 5, '2025-04-24 21:17:16');
+INSERT INTO `sukien` (`ID_Sukien`, `TenSuKien`, `HinhAnh`, `ThoiGianBatDau`, `ThoiGianKetThuc`, `NoiDung`, `TheLoai`, `ID_User`, `ID_Ve`, `ID_DiaDiem`, `NgayTao`, `qrcode`) VALUES
+(1, 'Lễ Hội Ánh Sáng', 'anhsang1.jpg', '2025-05-01 12:00:00', '2025-05-02 15:00:00', 'Lễ hội với hàng ngàn ánh đèn nghệ thuật.', 'Lễ hội', 4, 1, 1, '2025-04-24 21:13:21', ''),
+(2, 'Đêm Nhạc Rock', 'rock1.jpg', '2025-06-10 13:00:00', '2025-06-10 17:00:00', 'Chương trình nhạc rock với nhiều ban nhạc nổi tiếng.', 'Âm nhạc', 4, 2, 2, '2025-04-24 21:14:24', ''),
+(3, 'Chung Kết Rap Việt', 'rapviet1.jpg', '2025-07-20 09:00:00', '2025-07-20 18:00:00', 'Sự kiện hoành tráng với dàn sao rap hot nhất.', 'Truyền hình', 4, 3, 3, '2025-04-24 21:15:24', ''),
+(4, 'Workshop Công Nghệ', 'workshop1.jpeg', '2025-08-15 01:00:00', '2025-08-16 07:00:00', 'Hội thảo chia sẻ về công nghệ tương lai.', 'Giáo dục', 5, 4, 4, '2025-04-24 21:16:20', ''),
+(5, 'Lễ Hội Ẩm Thực', 'amthuc1.jpg', '2025-09-10 01:00:00', '2025-09-12 07:00:00', 'Thưởng thức các món ăn từ khắp nơi trên thế giới.', 'Ẩm thực', 5, 5, 5, '2025-04-24 21:17:16', '');
 
 -- --------------------------------------------------------
 
@@ -187,22 +210,23 @@ CREATE TABLE `user` (
   `Email` varchar(255) NOT NULL,
   `TenDangNhap` varchar(255) NOT NULL,
   `MatKhau` varchar(255) NOT NULL,
-  `ID_Role` int(11) NOT NULL
+  `ID_Role` int(11) NOT NULL,
+  `HinhAnh` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `user`
 --
 
-INSERT INTO `user` (`ID_User`, `HoTen`, `SoDienThoai`, `Email`, `TenDangNhap`, `MatKhau`, `ID_Role`) VALUES
-(1, 'BuiThanhBinh', '0707102543', 'thanhbinh@gmail.com', 'admin', '$2y$10$BiAedOFqCcOoTY07rMfLMuUWHVeVGTeDsU45BQDi.uE2s7CX.Bg9m', 1),
-(2, 'Ngyễn Văn A', '0914564565', 'nguyenvana@gmail.com', 'khachhang1', '$2y$10$BiAedOFqCcOoTY07rMfLMuUWHVeVGTeDsU45BQDi.uE2s7CX.Bg9m', 2),
-(3, 'Nguyễn Văn B', '0914564512', 'vanB@gmail.com', 'khachhang2', '$2y$10$BiAedOFqCcOoTY07rMfLMuUWHVeVGTeDsU45BQDi.uE2s7CX.Bg9m', 2),
-(4, 'Hồ Văn Cường', '0987845236', 'hovancuong@gmail.com', 'donvitochuc1', '$2y$10$BiAedOFqCcOoTY07rMfLMuUWHVeVGTeDsU45BQDi.uE2s7CX.Bg9m', 3),
-(5, 'Hồ Văn B', '0914564512', 'hovanB@gmail.com', 'donvitochuc2', '$2y$10$BiAedOFqCcOoTY07rMfLMuUWHVeVGTeDsU45BQDi.uE2s7CX.Bg9m', 3),
-(6, 'Nhân viên 1', '0914564512', 'nhanvien1@gmail.com', 'nhanvien1', '$2y$10$BiAedOFqCcOoTY07rMfLMuUWHVeVGTeDsU45BQDi.uE2s7CX.Bg9m', 4),
-(7, 'Nhân viên 2', '0914564534', 'nhanvien2@gmail.com', 'nhanvien2', '$2y$10$BiAedOFqCcOoTY07rMfLMuUWHVeVGTeDsU45BQDi.uE2s7CX.Bg9m', 4),
-(8, 'Bùi Thanh Bình', '0707102546', 'binhnekkk@gmail.com', 'binhnekkk123', '$2y$10$BiAedOFqCcOoTY07rMfLMuUWHVeVGTeDsU45BQDi.uE2s7CX.Bg9m', 2);
+INSERT INTO `user` (`ID_User`, `HoTen`, `SoDienThoai`, `Email`, `TenDangNhap`, `MatKhau`, `ID_Role`, `HinhAnh`) VALUES
+(1, 'BuiThanhBinh', '0707102543', 'thanhbinh@gmail.com', 'admin', '$2y$10$BiAedOFqCcOoTY07rMfLMuUWHVeVGTeDsU45BQDi.uE2s7CX.Bg9m', 1, ''),
+(2, 'Ngyễn Văn A', '0914564565', 'nguyenvana@gmail.com', 'khachhang1', '$2y$10$BiAedOFqCcOoTY07rMfLMuUWHVeVGTeDsU45BQDi.uE2s7CX.Bg9m', 2, ''),
+(3, 'Nguyễn Văn B', '0914564512', 'vanB@gmail.com', 'khachhang2', '$2y$10$BiAedOFqCcOoTY07rMfLMuUWHVeVGTeDsU45BQDi.uE2s7CX.Bg9m', 2, ''),
+(4, 'Hồ Văn Cường', '0987845236', 'hovancuong@gmail.com', 'donvitochuc1', '$2y$10$BiAedOFqCcOoTY07rMfLMuUWHVeVGTeDsU45BQDi.uE2s7CX.Bg9m', 3, 'Hinh/avatars/user_4_1746690016.jpg'),
+(5, 'Hồ Văn B', '0914564512', 'hovanB@gmail.com', 'donvitochuc2', '$2y$10$BiAedOFqCcOoTY07rMfLMuUWHVeVGTeDsU45BQDi.uE2s7CX.Bg9m', 3, ''),
+(6, 'Nhân viên 1', '0914564512', 'nhanvien1@gmail.com', 'nhanvien1', '$2y$10$BiAedOFqCcOoTY07rMfLMuUWHVeVGTeDsU45BQDi.uE2s7CX.Bg9m', 4, ''),
+(7, 'Nhân viên 2', '0914564534', 'nhanvien2@gmail.com', 'nhanvien2', '$2y$10$BiAedOFqCcOoTY07rMfLMuUWHVeVGTeDsU45BQDi.uE2s7CX.Bg9m', 4, ''),
+(8, 'Bùi Thanh Bình', '0707102546', 'binhnekkk@gmail.com', 'binhnekkk123', '$2y$10$qBoQifkljhts5GBKuSRbDuFuvTXqKty08PkkY9vil22Xxi02WgT1i', 2, '');
 
 -- --------------------------------------------------------
 
@@ -214,7 +238,7 @@ CREATE TABLE `ve` (
   `ID_Ve` int(11) NOT NULL,
   `ID_User` int(11) NOT NULL,
   `ID_Sukien` int(11) NOT NULL,
-  `HangVe` enum('Thường','Vip') NOT NULL,
+  `HangVe` varchar(255) NOT NULL,
   `GiaVe` decimal(10,0) NOT NULL,
   `SoLuong` int(11) NOT NULL,
   `TrangThai` enum('Còn vé','Hết vé') NOT NULL
@@ -262,9 +286,17 @@ ALTER TABLE `diadiem`
   ADD PRIMARY KEY (`ID_DiaDiem`);
 
 --
--- Chỉ mục cho bảng `hoa`
+-- Chỉ mục cho bảng `giohang`
 --
-ALTER TABLE `hoa`
+ALTER TABLE `giohang`
+  ADD PRIMARY KEY (`ID_GioHang`),
+  ADD KEY `ID_User` (`ID_User`),
+  ADD KEY `ID_Ve` (`ID_Ve`);
+
+--
+-- Chỉ mục cho bảng `hoadon`
+--
+ALTER TABLE `hoadon`
   ADD PRIMARY KEY (`ID_HoaDon`);
 
 --
@@ -332,9 +364,15 @@ ALTER TABLE `diadiem`
   MODIFY `ID_DiaDiem` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT cho bảng `hoa`
+-- AUTO_INCREMENT cho bảng `giohang`
 --
-ALTER TABLE `hoa`
+ALTER TABLE `giohang`
+  MODIFY `ID_GioHang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT cho bảng `hoadon`
+--
+ALTER TABLE `hoadon`
   MODIFY `ID_HoaDon` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -365,7 +403,7 @@ ALTER TABLE `tichdiem`
 -- AUTO_INCREMENT cho bảng `user`
 --
 ALTER TABLE `user`
-  MODIFY `ID_User` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `ID_User` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT cho bảng `ve`
@@ -391,6 +429,13 @@ ALTER TABLE `chat_hotro`
   ADD CONSTRAINT `FK_hotro_user` FOREIGN KEY (`ID_User`) REFERENCES `user` (`ID_User`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Các ràng buộc cho bảng `giohang`
+--
+ALTER TABLE `giohang`
+  ADD CONSTRAINT `FK_giohang_user` FOREIGN KEY (`ID_User`) REFERENCES `user` (`ID_User`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_giohang_ve` FOREIGN KEY (`ID_Ve`) REFERENCES `ve` (`ID_Ve`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Các ràng buộc cho bảng `sukien`
 --
 ALTER TABLE `sukien`
@@ -408,12 +453,6 @@ ALTER TABLE `thanhtoan`
 --
 ALTER TABLE `user`
   ADD CONSTRAINT `FK_role_user` FOREIGN KEY (`ID_Role`) REFERENCES `phanquyen` (`ID_Role`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Các ràng buộc cho bảng `ve`
---
-ALTER TABLE `ve`
-  ADD CONSTRAINT `FK_ve` FOREIGN KEY (`ID_Sukien`) REFERENCES `sukien` (`ID_Sukien`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

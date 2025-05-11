@@ -13,13 +13,15 @@ require_once '../../includes/csrf.php';
         body {
             background: linear-gradient(to right, #000000, #0f9d58);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
         }
-
+        .container-login-center {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         .login-container {
             background: rgba(255, 255, 255, 0.9);
             padding: 2rem;
@@ -28,7 +30,6 @@ require_once '../../includes/csrf.php';
             width: 100%;
             max-width: 400px;
         }
-
         .form-label {
             font-weight: 500;
             margin-bottom: 4px;
@@ -90,26 +91,28 @@ require_once '../../includes/csrf.php';
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2 class="text-center mb-4">Đăng nhập</h2>
-        <div class="alert alert-danger" role="alert"></div>
-        <form id="loginForm">
-            <?php echo CSRF::getTokenInput(); ?>
-            <div class="mb-3">
-                <label for="username" class="form-label">Tên đăng nhập</label>
-                <input type="text" class="form-control" id="username" name="username" required>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Mật khẩu</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary">Đăng nhập</button>
-            </div>
-            <div class="text-center mt-3">
-                <p>Chưa có tài khoản? <a href="register.php" class="link-register">Đăng ký ngay</a></p>
-            </div>
-        </form>
+    <div class="container-login-center">
+        <div class="login-container">
+            <h2 class="text-center mb-4">Đăng nhập</h2>
+            <div class="alert alert-danger" role="alert"></div>
+            <form id="loginForm">
+                <?php echo CSRF::getTokenInput(); ?>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Tên đăng nhập</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Mật khẩu</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Đăng nhập</button>
+                </div>
+                <div class="text-center mt-3">
+                    <p>Chưa có tài khoản? <a href="register.php" class="link-register">Đăng ký ngay</a></p>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

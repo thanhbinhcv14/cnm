@@ -26,10 +26,5 @@ class QRGenerator {
         return self::generateQRCode($data, $filename);
     }
     
-    public static function generateTicketQRCode($ticketId) {
-        $data = BASE_URL . '/ticket.php?id=' . $ticketId;
-        $filename = 'ticket_' . $ticketId . '.png';
-        return self::generateQRCode($data, $filename);
-    }
 }
 ?> 

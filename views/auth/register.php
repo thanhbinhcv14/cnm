@@ -232,11 +232,15 @@ require_once '../../includes/csrf.php';
                                 window.location.href = 'login.php';
                             }, 1000);
                         } else {
-                            showAlert(response.message);
+                            showAlert(response.message || 'Đăng ký thất bại. Vui lòng thử lại.');
                         }
                     },
-                    error: function() {
-                        showAlert('Có lỗi xảy ra, vui lòng thử lại sau');
+                    error: function(xhr) {
+                        let msg = 'Có lỗi xảy ra, vui lòng thử lại sau';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            msg = xhr.responseJSON.message;
+                        }
+                        showAlert(msg);
                     }
                 });
             });

@@ -8,13 +8,26 @@ require_once '../config/config.php';
 
 $conn = getDBConnection();
 
+function addTotalTickets(&$events, $conn) {
+    foreach ($events as &$event) {
+        $stmt2 = $conn->prepare("SELECT SUM(SoLuong) as total FROM ve WHERE ID_SuKien = ?");
+        $stmt2->bind_param("i", $event['ID_SuKien']);
+        $stmt2->execute();
+        $res2 = $stmt2->get_result();
+        $row2 = $res2->fetch_assoc();
+        $event['TongSoVe'] = (int)($row2['total'] ?? 0);
+        $stmt2->close();
+    }
+    unset($event);
+}
+
 switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
         $search = isset($_GET['search']) ? trim($_GET['search']) : '';
         $user_id = isset($_GET['user_id']) ? intval($_GET['user_id']) : 0;
         if ($search !== '') {
             $searchParam = '%' . $conn->real_escape_string($search) . '%';
-            $query = "SELECT s.ID_SuKien, s.TenSuKien, s.HinhAnh, s.ThoiGianBatDau, s.ThoiGianKetThuc, d.TenDiaDiem as DiaDiem, u.HoTen as organizer_name
+            $query = "SELECT s.ID_SuKien, s.TenSuKien, s.HinhAnh, s.TheLoai, s.ThoiGianBatDau, s.ThoiGianKetThuc, d.TenDiaDiem as DiaDiem, u.HoTen as organizer_name
                       FROM sukien s
                       JOIN user u ON s.ID_User = u.ID_User
                       JOIN diadiem d ON s.ID_DiaDiem = d.ID_DiaDiem
@@ -30,10 +43,11 @@ switch ($_SERVER['REQUEST_METHOD']) {
             $stmt->execute();
             $result = $stmt->get_result();
             $events = $result->fetch_all(MYSQLI_ASSOC);
+            addTotalTickets($events, $conn);
             echo json_encode(['success' => true, 'data' => $events]);
             break;
         } else if ($user_id > 0) {
-            $query = "SELECT s.ID_SuKien, s.TenSuKien, s.HinhAnh, s.ThoiGianBatDau, s.ThoiGianKetThuc, d.TenDiaDiem as DiaDiem, u.HoTen as organizer_name
+            $query = "SELECT s.ID_SuKien, s.TenSuKien, s.HinhAnh, s.TheLoai, s.ThoiGianBatDau, s.ThoiGianKetThuc, d.TenDiaDiem as DiaDiem, u.HoTen as organizer_name
                       FROM sukien s
                       JOIN user u ON s.ID_User = u.ID_User
                       JOIN diadiem d ON s.ID_DiaDiem = d.ID_DiaDiem
@@ -44,13 +58,14 @@ switch ($_SERVER['REQUEST_METHOD']) {
             $stmt->execute();
             $result = $stmt->get_result();
             $events = $result->fetch_all(MYSQLI_ASSOC);
+            addTotalTickets($events, $conn);
             echo json_encode(['success' => true, 'data' => $events]);
             break;
         }
         if (isset($_GET['id'])) {
             // Lấy thông tin chi tiết một sự kiện
             $event_id = intval($_GET['id']);
-            $stmt = $conn->prepare("SELECT s.*, d.TenDiaDiem, u.HoTen as organizer_name
+            $stmt = $conn->prepare("SELECT s.*, d.TenDiaDiem, u.HoTen as organizer_name, s.qrcode
                                   FROM sukien s
                                   JOIN user u ON s.ID_User = u.ID_User
                                   JOIN diadiem d ON s.ID_DiaDiem = d.ID_DiaDiem
@@ -67,7 +82,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
             }
         } else {
             // Lấy danh sách tất cả sự kiện
-            $query = "SELECT s.ID_SuKien, s.TenSuKien, s.HinhAnh, s.ThoiGianBatDau, s.ThoiGianKetThuc, d.TenDiaDiem as DiaDiem, u.HoTen as organizer_name
+            $query = "SELECT s.ID_SuKien, s.TenSuKien, s.HinhAnh, s.TheLoai, s.ThoiGianBatDau, s.ThoiGianKetThuc, d.TenDiaDiem as DiaDiem, u.HoTen as organizer_name,s.qrcode
                       FROM sukien s
                       JOIN user u ON s.ID_User = u.ID_User
                       JOIN diadiem d ON s.ID_DiaDiem = d.ID_DiaDiem
@@ -75,6 +90,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
             $result = $conn->query($query);
             if ($result) {
                 $events = $result->fetch_all(MYSQLI_ASSOC);
+                addTotalTickets($events, $conn);
                 echo json_encode(['success' => true, 'data' => $events]);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Lỗi truy vấn']);
@@ -83,10 +99,11 @@ switch ($_SERVER['REQUEST_METHOD']) {
         break;
     case 'POST':
         $data = json_decode(file_get_contents('php://input'), true);
-        $stmt = $conn->prepare("INSERT INTO sukien (TenSuKien, HinhAnh, ThoiGianBatDau, ThoiGianKetThuc, ID_DiaDiem, ID_User) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO sukien (TenSuKien, HinhAnh, TheLoai, ThoiGianBatDau, ThoiGianKetThuc, ID_DiaDiem, ID_User) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("ssssii",
             $data['TenSuKien'],
             $data['HinhAnh'],
+            $data['TheLoai'],
             $data['ThoiGianBatDau'],
             $data['ThoiGianKetThuc'],
             $data['ID_DiaDiem'],
@@ -113,10 +130,11 @@ switch ($_SERVER['REQUEST_METHOD']) {
             echo json_encode(['success' => false, 'message' => 'Thiếu ID_SuKien']);
             break;
         }
-        $stmt = $conn->prepare("UPDATE sukien SET TenSuKien=?, HinhAnh=?, ThoiGianBatDau=?, ThoiGianKetThuc=?, ID_DiaDiem=?, ID_User=? WHERE ID_SuKien=?");
+        $stmt = $conn->prepare("UPDATE sukien SET TenSuKien=?, HinhAnh=?, TheLoai=?, ThoiGianBatDau=?, ThoiGianKetThuc=?, ID_DiaDiem=?, ID_User=? WHERE ID_SuKien=?");
         $stmt->bind_param("ssssiii",
             $put_vars['TenSuKien'],
             $put_vars['HinhAnh'],
+            $put_vars['TheLoai'],
             $put_vars['ThoiGianBatDau'],
             $put_vars['ThoiGianKetThuc'],
             $put_vars['ID_DiaDiem'],

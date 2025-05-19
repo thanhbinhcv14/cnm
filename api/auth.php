@@ -149,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     // Thêm chi tiết lỗi nếu có thể
                     error_log("Register Error: " . $stmt->error);
-                    echo json_encode(['success' => false, 'message' => 'Đăng ký thất bại. Vui lòng thử lại.']);
+                    echo json_encode(['success' => false, 'message' => 'Đăng ký thất bại. Vui lòng thử lại. Lỗi: ' . $stmt->error]);
                 }
                 break;
                 
@@ -161,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 
                 // Lấy thông tin user từ TenDangNhap
-                $stmt = $conn->prepare("SELECT ID_User, TenDangNhap, MatKhau, email, HoTen, ID_Role FROM user WHERE TenDangNhap = ?");
+                $stmt = $conn->prepare("SELECT ID_User, TenDangNhap, MatKhau, email, HoTen, ID_Role, HinhAnh FROM user WHERE TenDangNhap = ?");
                 $stmt->bind_param("s", $data['username']);
                 $stmt->execute();
                 $result = $stmt->get_result();
@@ -185,6 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['user_id'] = $user['ID_User'];
                 $_SESSION['role_id'] = $user['ID_Role'];
                 $_SESSION['user_fullname'] = $user['HoTen'];
+                $_SESSION['HinhAnh'] = $user['HinhAnh'] ?? null;
 
                 // Chuẩn bị dữ liệu trả về (không bao gồm mật khẩu)
                 $userData = [
@@ -205,11 +206,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 break;
                 
             default:
-                echo json_encode(['success' => false, 'message' => 'Invalid action']);
+                echo json_encode(['success' => false, 'message' => 'Hành động không hợp lệ hoặc không được hỗ trợ.']);
                 break;
         }
     } else {
-        echo json_encode(['success' => false, 'message' => 'No action specified']);
+        echo json_encode(['success' => false, 'message' => 'Không xác định hành động. Vui lòng thử lại.']);
     }
 } else {
     http_response_code(405); // Method Not Allowed

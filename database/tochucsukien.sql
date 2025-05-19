@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th5 09, 2025 lúc 07:59 AM
--- Phiên bản máy phục vụ: 10.4.32-MariaDB
--- Phiên bản PHP: 8.2.12
+-- Host: 127.0.0.1
+-- Generation Time: May 18, 2025 at 02:17 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.1.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Cơ sở dữ liệu: `tochucsukien`
+-- Database: `tochucsukien`
 --
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `binhluan`
+-- Table structure for table `binhluan`
 --
 
 CREATE TABLE `binhluan` (
@@ -35,10 +35,17 @@ CREATE TABLE `binhluan` (
   `NgayTao` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `binhluan`
+--
+
+INSERT INTO `binhluan` (`ID_BinhLuan`, `ID_User`, `ID_Sukien`, `NoiDung`, `NgayTao`) VALUES
+(1, 8, 1, 'hello', '2025-05-18 11:31:51');
+
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `chat_hotro`
+-- Table structure for table `chat_hotro`
 --
 
 CREATE TABLE `chat_hotro` (
@@ -51,7 +58,7 @@ CREATE TABLE `chat_hotro` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `diadiem`
+-- Table structure for table `diadiem`
 --
 
 CREATE TABLE `diadiem` (
@@ -65,7 +72,7 @@ CREATE TABLE `diadiem` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `diadiem`
+-- Dumping data for table `diadiem`
 --
 
 INSERT INTO `diadiem` (`ID_DiaDiem`, `TenDiaDiem`, `DiaChi`, `HinhAnh`, `TenChuSoHuu`, `SoDienThoai`, `Ngaytao`) VALUES
@@ -78,7 +85,7 @@ INSERT INTO `diadiem` (`ID_DiaDiem`, `TenDiaDiem`, `DiaChi`, `HinhAnh`, `TenChuS
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `giohang`
+-- Table structure for table `giohang`
 --
 
 CREATE TABLE `giohang` (
@@ -90,17 +97,18 @@ CREATE TABLE `giohang` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `giohang`
+-- Dumping data for table `giohang`
 --
 
 INSERT INTO `giohang` (`ID_GioHang`, `ID_User`, `ID_Ve`, `SoLuong`, `NgayTao`) VALUES
 (1, 8, 10, 1, '2025-05-03 13:57:31'),
-(2, 1, 8, 1, '2025-05-05 07:56:58');
+(2, 1, 8, 1, '2025-05-05 07:56:58'),
+(3, 8, 1, 1, '2025-05-18 12:02:33');
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `hoadon`
+-- Table structure for table `hoadon`
 --
 
 CREATE TABLE `hoadon` (
@@ -115,7 +123,7 @@ CREATE TABLE `hoadon` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `phanquyen`
+-- Table structure for table `phanquyen`
 --
 
 CREATE TABLE `phanquyen` (
@@ -125,7 +133,7 @@ CREATE TABLE `phanquyen` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `phanquyen`
+-- Dumping data for table `phanquyen`
 --
 
 INSERT INTO `phanquyen` (`ID_Role`, `TenRole`, `GhiChu`) VALUES
@@ -137,7 +145,7 @@ INSERT INTO `phanquyen` (`ID_Role`, `TenRole`, `GhiChu`) VALUES
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `sukien`
+-- Table structure for table `sukien`
 --
 
 CREATE TABLE `sukien` (
@@ -156,20 +164,20 @@ CREATE TABLE `sukien` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `sukien`
+-- Dumping data for table `sukien`
 --
 
 INSERT INTO `sukien` (`ID_Sukien`, `TenSuKien`, `HinhAnh`, `ThoiGianBatDau`, `ThoiGianKetThuc`, `NoiDung`, `TheLoai`, `ID_User`, `ID_Ve`, `ID_DiaDiem`, `NgayTao`, `qrcode`) VALUES
-(1, 'Lễ Hội Ánh Sáng', 'anhsang1.jpg', '2025-05-01 12:00:00', '2025-05-02 15:00:00', 'Lễ hội với hàng ngàn ánh đèn nghệ thuật.', 'Lễ hội', 4, 1, 1, '2025-04-24 21:13:21', ''),
-(2, 'Đêm Nhạc Rock', 'rock1.jpg', '2025-06-10 13:00:00', '2025-06-10 17:00:00', 'Chương trình nhạc rock với nhiều ban nhạc nổi tiếng.', 'Âm nhạc', 4, 2, 2, '2025-04-24 21:14:24', ''),
-(3, 'Chung Kết Rap Việt', 'rapviet1.jpg', '2025-07-20 09:00:00', '2025-07-20 18:00:00', 'Sự kiện hoành tráng với dàn sao rap hot nhất.', 'Truyền hình', 4, 3, 3, '2025-04-24 21:15:24', ''),
-(4, 'Workshop Công Nghệ', 'workshop1.jpeg', '2025-08-15 01:00:00', '2025-08-16 07:00:00', 'Hội thảo chia sẻ về công nghệ tương lai.', 'Giáo dục', 5, 4, 4, '2025-04-24 21:16:20', ''),
-(5, 'Lễ Hội Ẩm Thực', 'amthuc1.jpg', '2025-09-10 01:00:00', '2025-09-12 07:00:00', 'Thưởng thức các món ăn từ khắp nơi trên thế giới.', 'Ẩm thực', 5, 5, 5, '2025-04-24 21:17:16', '');
+(1, 'Lễ Hội Ánh Sáng', 'anhsang1.jpg', '2025-05-18 11:29:48', '2025-05-02 15:00:00', 'Lễ hội với hàng ngàn ánh đèn nghệ thuật.', 'Lễ hội', 4, 1, 1, '2025-04-24 21:13:21', '../Hinh/qr_codes/sukien_1.png'),
+(2, 'Đêm Nhạc Rock', 'rock1.jpg', '2025-05-18 11:29:48', '2025-06-10 17:00:00', 'Chương trình nhạc rock với nhiều ban nhạc nổi tiếng.', 'Âm nhạc', 4, 2, 2, '2025-04-24 21:14:24', '../Hinh/qr_codes/sukien_2.png'),
+(3, 'Chung Kết Rap Việt', 'rapviet1.jpg', '2025-05-18 11:29:48', '2025-07-20 18:00:00', 'Sự kiện hoành tráng với dàn sao rap hot nhất.', 'Truyền hình', 4, 3, 3, '2025-04-24 21:15:24', '../Hinh/qr_codes/sukien_3.png'),
+(4, 'Workshop Công Nghệ', 'workshop1.jpeg', '2025-05-18 11:29:48', '2025-08-16 07:00:00', 'Hội thảo chia sẻ về công nghệ tương lai.', 'Giáo dục', 5, 4, 4, '2025-04-24 21:16:20', '../Hinh/qr_codes/sukien_4.png'),
+(5, 'Lễ Hội Ẩm Thực', 'amthuc1.jpg', '2025-05-18 11:29:48', '2025-09-12 07:00:00', 'Thưởng thức các món ăn từ khắp nơi trên thế giới.', 'Ẩm thực', 5, 5, 5, '2025-04-24 21:17:16', '../Hinh/qr_codes/sukien_5.png');
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `thanhtoan`
+-- Table structure for table `thanhtoan`
 --
 
 CREATE TABLE `thanhtoan` (
@@ -185,7 +193,7 @@ CREATE TABLE `thanhtoan` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `tichdiem`
+-- Table structure for table `tichdiem`
 --
 
 CREATE TABLE `tichdiem` (
@@ -200,7 +208,7 @@ CREATE TABLE `tichdiem` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `user`
+-- Table structure for table `user`
 --
 
 CREATE TABLE `user` (
@@ -215,7 +223,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `user`
+-- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`ID_User`, `HoTen`, `SoDienThoai`, `Email`, `TenDangNhap`, `MatKhau`, `ID_Role`, `HinhAnh`) VALUES
@@ -231,7 +239,7 @@ INSERT INTO `user` (`ID_User`, `HoTen`, `SoDienThoai`, `Email`, `TenDangNhap`, `
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `ve`
+-- Table structure for table `ve`
 --
 
 CREATE TABLE `ve` (
@@ -241,31 +249,32 @@ CREATE TABLE `ve` (
   `HangVe` varchar(255) NOT NULL,
   `GiaVe` decimal(10,0) NOT NULL,
   `SoLuong` int(11) NOT NULL,
+  `SoLuongTon` int(11) NOT NULL,
   `TrangThai` enum('Còn vé','Hết vé') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `ve`
+-- Dumping data for table `ve`
 --
 
-INSERT INTO `ve` (`ID_Ve`, `ID_User`, `ID_Sukien`, `HangVe`, `GiaVe`, `SoLuong`, `TrangThai`) VALUES
-(1, 4, 1, 'Thường', 100000, 100, 'Còn vé'),
-(2, 4, 1, 'Vip', 200000, 50, 'Còn vé'),
-(3, 4, 2, 'Thường', 300000, 200, 'Còn vé'),
-(4, 4, 2, 'Vip', 500000, 100, 'Còn vé'),
-(5, 4, 3, 'Thường', 800000, 200, 'Còn vé'),
-(6, 4, 3, 'Vip', 1000000, 300, 'Còn vé'),
-(7, 5, 4, 'Thường', 100000, 100, 'Còn vé'),
-(8, 5, 4, 'Vip', 200000, 50, 'Còn vé'),
-(9, 5, 5, 'Thường', 150000, 90, 'Còn vé'),
-(10, 5, 5, 'Vip', 200000, 40, 'Còn vé');
+INSERT INTO `ve` (`ID_Ve`, `ID_User`, `ID_Sukien`, `HangVe`, `GiaVe`, `SoLuong`, `SoLuongTon`, `TrangThai`) VALUES
+(1, 4, 1, 'Thường', 100000, 100, 100, 'Còn vé'),
+(2, 4, 1, 'Vip', 200000, 50, 50, 'Còn vé'),
+(3, 4, 2, 'Thường', 300000, 200, 200, 'Còn vé'),
+(4, 4, 2, 'Vip', 500000, 100, 100, 'Còn vé'),
+(5, 4, 3, 'Thường', 800000, 200, 200, 'Còn vé'),
+(6, 4, 3, 'Vip', 1000000, 300, 300, 'Còn vé'),
+(7, 5, 4, 'Thường', 100000, 100, 100, 'Còn vé'),
+(8, 5, 4, 'Vip', 200000, 50, 50, 'Còn vé'),
+(9, 5, 5, 'Thường', 150000, 90, 90, 'Còn vé'),
+(10, 5, 5, 'Vip', 200000, 40, 40, 'Còn vé');
 
 --
--- Chỉ mục cho các bảng đã đổ
+-- Indexes for dumped tables
 --
 
 --
--- Chỉ mục cho bảng `binhluan`
+-- Indexes for table `binhluan`
 --
 ALTER TABLE `binhluan`
   ADD PRIMARY KEY (`ID_BinhLuan`),
@@ -273,20 +282,20 @@ ALTER TABLE `binhluan`
   ADD KEY `FK_binhluan_sukien` (`ID_Sukien`);
 
 --
--- Chỉ mục cho bảng `chat_hotro`
+-- Indexes for table `chat_hotro`
 --
 ALTER TABLE `chat_hotro`
   ADD PRIMARY KEY (`ID_HoTro`),
   ADD KEY `FK_hotro_user` (`ID_User`);
 
 --
--- Chỉ mục cho bảng `diadiem`
+-- Indexes for table `diadiem`
 --
 ALTER TABLE `diadiem`
   ADD PRIMARY KEY (`ID_DiaDiem`);
 
 --
--- Chỉ mục cho bảng `giohang`
+-- Indexes for table `giohang`
 --
 ALTER TABLE `giohang`
   ADD PRIMARY KEY (`ID_GioHang`),
@@ -294,19 +303,19 @@ ALTER TABLE `giohang`
   ADD KEY `ID_Ve` (`ID_Ve`);
 
 --
--- Chỉ mục cho bảng `hoadon`
+-- Indexes for table `hoadon`
 --
 ALTER TABLE `hoadon`
   ADD PRIMARY KEY (`ID_HoaDon`);
 
 --
--- Chỉ mục cho bảng `phanquyen`
+-- Indexes for table `phanquyen`
 --
 ALTER TABLE `phanquyen`
   ADD PRIMARY KEY (`ID_Role`);
 
 --
--- Chỉ mục cho bảng `sukien`
+-- Indexes for table `sukien`
 --
 ALTER TABLE `sukien`
   ADD PRIMARY KEY (`ID_Sukien`),
@@ -315,141 +324,141 @@ ALTER TABLE `sukien`
   ADD KEY `FK_sukien_diadiem` (`ID_DiaDiem`);
 
 --
--- Chỉ mục cho bảng `thanhtoan`
+-- Indexes for table `thanhtoan`
 --
 ALTER TABLE `thanhtoan`
   ADD PRIMARY KEY (`ID_ThanhToan`),
   ADD KEY `FK_thanhtoan_user` (`ID_User`);
 
 --
--- Chỉ mục cho bảng `tichdiem`
+-- Indexes for table `tichdiem`
 --
 ALTER TABLE `tichdiem`
   ADD PRIMARY KEY (`ID_TichDiem`);
 
 --
--- Chỉ mục cho bảng `user`
+-- Indexes for table `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`ID_User`),
   ADD KEY `FK_role_user` (`ID_Role`);
 
 --
--- Chỉ mục cho bảng `ve`
+-- Indexes for table `ve`
 --
 ALTER TABLE `ve`
   ADD PRIMARY KEY (`ID_Ve`),
   ADD KEY `FK_ve` (`ID_Sukien`);
 
 --
--- AUTO_INCREMENT cho các bảng đã đổ
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT cho bảng `binhluan`
+-- AUTO_INCREMENT for table `binhluan`
 --
 ALTER TABLE `binhluan`
-  MODIFY `ID_BinhLuan` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_BinhLuan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT cho bảng `chat_hotro`
+-- AUTO_INCREMENT for table `chat_hotro`
 --
 ALTER TABLE `chat_hotro`
   MODIFY `ID_HoTro` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT cho bảng `diadiem`
+-- AUTO_INCREMENT for table `diadiem`
 --
 ALTER TABLE `diadiem`
   MODIFY `ID_DiaDiem` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT cho bảng `giohang`
+-- AUTO_INCREMENT for table `giohang`
 --
 ALTER TABLE `giohang`
-  MODIFY `ID_GioHang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ID_GioHang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT cho bảng `hoadon`
+-- AUTO_INCREMENT for table `hoadon`
 --
 ALTER TABLE `hoadon`
   MODIFY `ID_HoaDon` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT cho bảng `phanquyen`
+-- AUTO_INCREMENT for table `phanquyen`
 --
 ALTER TABLE `phanquyen`
   MODIFY `ID_Role` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT cho bảng `sukien`
+-- AUTO_INCREMENT for table `sukien`
 --
 ALTER TABLE `sukien`
   MODIFY `ID_Sukien` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT cho bảng `thanhtoan`
+-- AUTO_INCREMENT for table `thanhtoan`
 --
 ALTER TABLE `thanhtoan`
   MODIFY `ID_ThanhToan` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT cho bảng `tichdiem`
+-- AUTO_INCREMENT for table `tichdiem`
 --
 ALTER TABLE `tichdiem`
   MODIFY `ID_TichDiem` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT cho bảng `user`
+-- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
   MODIFY `ID_User` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT cho bảng `ve`
+-- AUTO_INCREMENT for table `ve`
 --
 ALTER TABLE `ve`
   MODIFY `ID_Ve` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- Các ràng buộc cho các bảng đã đổ
+-- Constraints for dumped tables
 --
 
 --
--- Các ràng buộc cho bảng `binhluan`
+-- Constraints for table `binhluan`
 --
 ALTER TABLE `binhluan`
   ADD CONSTRAINT `FK_binhluan_sukien` FOREIGN KEY (`ID_Sukien`) REFERENCES `sukien` (`ID_Sukien`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_binhluan_user` FOREIGN KEY (`ID_User`) REFERENCES `user` (`ID_User`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `chat_hotro`
+-- Constraints for table `chat_hotro`
 --
 ALTER TABLE `chat_hotro`
   ADD CONSTRAINT `FK_hotro_user` FOREIGN KEY (`ID_User`) REFERENCES `user` (`ID_User`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `giohang`
+-- Constraints for table `giohang`
 --
 ALTER TABLE `giohang`
   ADD CONSTRAINT `FK_giohang_user` FOREIGN KEY (`ID_User`) REFERENCES `user` (`ID_User`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_giohang_ve` FOREIGN KEY (`ID_Ve`) REFERENCES `ve` (`ID_Ve`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `sukien`
+-- Constraints for table `sukien`
 --
 ALTER TABLE `sukien`
   ADD CONSTRAINT `FK_sukien_diadiem` FOREIGN KEY (`ID_DiaDiem`) REFERENCES `diadiem` (`ID_DiaDiem`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_sukien_user` FOREIGN KEY (`ID_User`) REFERENCES `user` (`ID_User`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `thanhtoan`
+-- Constraints for table `thanhtoan`
 --
 ALTER TABLE `thanhtoan`
   ADD CONSTRAINT `FK_thanhtoan_user` FOREIGN KEY (`ID_User`) REFERENCES `user` (`ID_User`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `user`
+-- Constraints for table `user`
 --
 ALTER TABLE `user`
   ADD CONSTRAINT `FK_role_user` FOREIGN KEY (`ID_Role`) REFERENCES `phanquyen` (`ID_Role`) ON DELETE CASCADE ON UPDATE CASCADE;

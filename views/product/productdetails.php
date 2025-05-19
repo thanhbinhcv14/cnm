@@ -33,6 +33,14 @@ if (!$event) {
     exit();
 }
 
+// function getBaseUrl() {
+//     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+//     $host = $_SERVER['HTTP_HOST'];
+//     $script = $_SERVER['SCRIPT_NAME'];
+//     $path = dirname($script);
+//     return rtrim($protocol . '://' . $host . $path, '/') . '/';
+// }
+
 function getEventImagePath($filename) {
     if (!$filename) return '../../Hinh/logo/logo.png';
     $posterPath = '../../Hinh/poster/' . $filename;
@@ -41,6 +49,33 @@ function getEventImagePath($filename) {
     if (file_exists($mainPath)) return $mainPath;
     return '../../Hinh/logo/logo.png';
 }
+
+// //Hàm chuẩn hóa đường dẫn avatar cho user
+// function getUserAvatar($filename) {
+//     if (!$filename || $filename === 'avatar.jpg') {
+//         return '/SuKien/cnm/Hinh/avatar/avatar.jpg';
+//     }
+//     if ($filename[0] === '/') {
+//         return $filename;
+//     }
+//     return 'SuKien/cnm/' . ltrim($filename, '/');
+// }
+
+function getQrCodePath($filename) {
+    if (!$filename) return '/SuKien/cnm/Hinh/qr_codes/default.png';
+    // Loại bỏ ../ ở đầu nếu có
+    $filename = preg_replace('#^\.\./#', '', $filename);
+    // Nếu đã có Hinh/qr_codes ở đầu thì thêm /SuKien/cnm/ phía trước
+    if (strpos($filename, 'Hinh/qr_codes/') === 0) {
+        return '/SuKien/cnm/' . $filename;
+    }
+    // Nếu đã là đường dẫn tuyệt đối
+    if ($filename[0] === '/') return $filename;
+    // Trường hợp còn lại
+    return '/SuKien/cnm/Hinh/qr_codes/' . $filename;
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -351,13 +386,16 @@ function getEventImagePath($filename) {
                         <div class="event-description">
                             <h4>Mô tả sự kiện</h4>
                             <p><?php echo nl2br(htmlspecialchars($event['NoiDung'] ?? 'Chưa có mô tả')); ?></p>
+                            <?php if (!empty($event['qrcode'])): ?>                                
+                                </div>
+                                <div class="event-description">
+                                    <h4>Mã QR sự kiện</h4>
+                                    <div class="text-center">
+                                        <img src="<?php echo getQrCodePath($event['qrcode']); ?>" alt="QR Code Sự kiện" style="max-width:200px;">
+                                    </div>
+                                    
+                            <?php endif; ?>
                         </div>
-                        <?php if (!empty($event['qrcode'])): ?>
-                            <div class="my-4 text-center">
-                                <h5>Mã QR sự kiện</h5>
-                                <img src="<?php echo htmlspecialchars('../../' . ltrim($event['qrcode'], '/')); ?>" alt="QR Code Sự kiện" style="max-width:200px;">
-                            </div>
-                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -417,7 +455,7 @@ function getEventImagePath($filename) {
                             <form id="commentForm" class="mb-4">
                                 <div class="form-group">
                                     <div class="d-flex align-items-start">
-                                        <img src="<?php echo isset($_SESSION['HinhAnh']) ? $_SESSION['HinhAnh'] : '../../Hinh/avatar/avatar.jpg'; ?>" 
+                                        <img src="<?php echo (getUserAvatarPath($_SESSION['HinhAnh'] ?? null)) ?>" 
                                              alt="Your avatar" 
                                              class="comment-avatar me-3">
                                         <div class="flex-grow-1">

@@ -1,7 +1,11 @@
 <?php
 function getUserAvatarPath($filename) {
-    if (!$filename || $filename === 'avatar.jpg') return '/SuKien/cnm/Hinh/avatar/avatar.jpg';
-    if (strpos($filename, 'http') === 0 || strpos($filename, '/') === 0) return $filename;
+    if (!$filename || $filename === 'avatar.jpg') {
+        return '/SuKien/cnm/Hinh/avatar/avatar.jpg';
+    }
+    if ($filename[0] === '/') {
+        return $filename;
+    }
     return '/SuKien/cnm/' . ltrim($filename, '/');
 }
 ?>
@@ -75,7 +79,7 @@ function getUserAvatarPath($filename) {
                     <?php endif; ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarUserDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img id="navbarUserAvatar" src="<?php echo getUserAvatarPath($_SESSION['HinhAnh'] ?? null); ?>" alt="User Avatar" class="me-2" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; background: #fff; border: 2px solid #eee;">
+                        <img id="navbarUserAvatar" src="<?php echo getUserAvatarPath($_SESSION['HinhAnh'] ?? null); ?>" alt="User Avatar" class="me-2" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover;">
                             <?php 
                             if (isset($_SESSION['user_fullname']) && !empty($_SESSION['user_fullname'])) {
                                 echo htmlspecialchars($_SESSION['user_fullname']);

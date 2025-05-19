@@ -62,6 +62,10 @@ if (session_status() === PHP_SESSION_NONE) {
                         <div class="p-3">
                             <h3 class="event-title"><?php echo htmlspecialchars($event['TenSuKien']); ?></h3>
                             <p class="event-info">
+                                <i class="fas fa-tag"></i> 
+                                <span class="event-category"><?php echo htmlspecialchars($event['TheLoai'] ?? 'Chưa phân loại'); ?></span>
+                            </p>
+                            <p class="event-info">
                                 <i class="fas fa-calendar"></i> 
                                 <span class="event-date"><?php echo date('d/m/Y H:i', strtotime($event['ThoiGianBatDau'])); ?></span>
                             </p>
@@ -69,7 +73,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                 <i class="fas fa-map-marker-alt"></i> 
                                 <?php echo htmlspecialchars($event['DiaDiem'] ?? ($event['TenDiaDiem'] ?? '')); ?>
                             </p>
-                            <a href="productdetails.php?id=<?php echo $event['ID_SuKien']; ?>" class="btn btn-outline-primary w-100">Xem chi tiết</a>
+                            <a href="/SuKien/cnm/views/product/productdetails.php?id=<?php echo $event['ID_SuKien']; ?>" class="btn btn-outline-primary w-100">Xem chi tiết</a>
                         </div>
                     </div>
                 </div>

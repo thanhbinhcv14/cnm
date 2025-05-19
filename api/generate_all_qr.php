@@ -9,7 +9,9 @@ $result = $conn->query($sql);
 
 while ($row = $result->fetch_assoc()) {
     $id = $row['ID_Sukien'];
-    $qrData = "http://localhost/SuKien/cnm/index.php?id=" . $id;
+    // $ip = getHostByName(getHostName());
+    //$qrData = "http://172.16.3.184/SuKien/cnm/views/product/productdetails.php?id=" . $id; sài chung mạng lan
+    $qrData = " https://a0f8-2001-ee0-4f97-3930-ac2c-69c0-36cd-7af3.ngrok-free.app/SuKien/cnm/views/product/productdetails.php?id=" . $id;
     $qrFilename = "sukien_" . $id . ".png";
     $qrPath = QRGenerator::generateQRCode($qrData, $qrFilename);
     $qrRelativePath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $qrPath);

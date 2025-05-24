@@ -1,6 +1,6 @@
 <h1 align="center"><b>Công nghệ mới</b></h>
 
-## Đề tài: Tìm hiểu các công nghệ QRcode và Xây dựng hệ thống tổ chức sự kiện
+## Đề tài: Tìm hiểu các công nghệ mới và Xây dựng hệ thống tổ chức sự kiện
 
 ## THÀNH VIÊN NHÓM
 |STT| MSSV      | Họ và Tên               |                                      
